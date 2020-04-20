@@ -1,0 +1,164 @@
+\documentclass[14pt, a4paper, titlepage, fleqn]{extarticle}
+\usepackage[english,russian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{cmap}
+\usepackage{listings}
+
+
+\author{Никифоров Данил}
+\title{Лабораторная работа №1}
+\date{\today}
+
+
+
+\begin{document}
+	
+
+
+    \maketitle
+    	
+    \tableofcontents
+    
+    \pagebreak
+    	
+    \section*{Введение}
+    \addcontentsline{toc}{section}{Введение}
+    \textit{Цель:} научиться верстать в LaTeX
+    	
+    
+        
+    \section*{Задания}
+    \addcontentsline{toc}{section}{Задания}
+    
+    \subsection*{1 задание}
+    \addcontentsline{toc}{subsection}{1 задание}
+    Вычислить следующий интеграл с подробным описанием всех действий:
+    \[\int x \cdot{\ln{4x}} ~ dx \]
+    
+    \begin{itemize}
+    
+        \item Воспользуемся формулой интегрирования по частям: \[\int u ~ dv = uv - \int v ~ du\]
+        \[\begin{aligned} 
+        	& \int x \cdot{\ln{4x}} ~ dx = (*) \left\vert{
+        	\begin{matrix}
+        	
+        		u = \ln{4x}, & du = \frac{~dx}{x} \\ 
+        		\\
+        		dv = x ~dx, & v = \frac{x^2}{2}
+        	
+        	\end{matrix}} \right\vert (*) = \ln{4x} \cdot{\frac{x^2}{2}} - \int{\frac{x^2}{2} \cdot \frac{~dx}{x}} = \\\\
+        &= \ln{4x} \cdot{\frac{x^2}{2}} - \frac{1}{2} \cdot \int{x ~dx} = \ln{4x} \cdot \frac{x^2}{2} - \frac{1}{4} \cdot{x^2} + C.
+        \end{aligned}\]
+	   
+    \end{itemize}
+    		
+    \subsection*{2 задание}
+    \addcontentsline{toc}{subsection}{2 задание}
+    Численно вычислить следующий интеграл с точностью $\varepsilon  = 10^{-5}$ :
+    \[\int_{0}^{\infty} {\sin{x^2}} ~ dx = 0.626657\]
+    
+    \pagebreak
+    Код для вычисления данного интеграла.
+    \begin{lstlisting}[language=C++, basicstyle=\footnotesize\ttfamily, frame=single]
+#include <iostream>
+#include <math.h>
+#include <vector>
+using namespace std;
+
+double f(double x) { return sin(x*x); }
+
+int main() {
+   vector <double> Integral(4);
+   double a = 0.0, b = 2000;
+   double h = 0.00001;
+   double n = (b - a) / h;
+
+   for(int i = 0; i < n; i++) {
+      Integral[0] += f(a + h * i) * h;//left
+      Integral[1] += f((a + h/2) + h * i) * h;
+      if (i > 0) {
+         Integral[2] += f(a + h * i) * h;
+      }
+      Integral[3] += (f(a + h * i) + f(a + h * (i + 1))) / 2 * h;
+   }
+   Integral[2] += f(a + h * n) * h;
+
+   cout << "____________________\n";
+   cout << "|Result is>>>>>>>-<" << "|" << "\n";
+   cout << "|Left:::::" << Integral[0] << "<|" << "\n";
+   cout << "|Middle:::" << Integral[1] << "<|" <<"\n";
+   cout << "|Right::::" << Integral[2] << "<|" <<"\n";
+   cout << "|Trapeze::" << Integral[3] << "<|" <<"\n";
+   cout << "--------------------\n";
+   return 0;
+}
+    \end{lstlisting}
+    
+    \begin{itemize}
+    
+    	\item Метод левых прямоугольников : 0.626627; $\delta = 0.00003$
+    	\item Метод центральных прямоугольников : 0.626622; $\delta = 0.000035$
+    	\item Метод правых прямоугольников : 0.626617;  $\delta = 0.00004$
+    	\item Метод трапеций : 0.626622;  $\delta = 0.000035$
+    	
+    \end{itemize}
+    
+        \subsection*{3 задание}
+    
+    \addcontentsline{toc}{subsection}{3 задание}
+    Для следующих дифференцильных уравнений определить тип, и с помощью программ компьютерной математики найти общее решение:
+    
+    \begin{enumerate}
+    	
+    	\item $y \cdot \ln{y}-y'\cdot \sqrt{1-x^2} = 0$\\  
+    	
+    	\textbf{Решение:} 
+    	
+    	Уравнение первого порядка с разделяющимися переменными 
+    	
+    	\[\log \log y=\arcsin x+{\it C.}\]\\
+    	
+    	
+    	\item $xy' = \displaystyle \frac{\sec{xy}}{y} - y$ \\
+    	
+    	\textbf{Решение:} 
+    	
+    	Обобщенное однородное уравнение первого порядка    
+    	
+    	\[-\, \frac{1}{x^{2}} + x\,y \cdot \sin{x\,y} + \cos{x\,y} = {\it C.}  \]	\\	
+    	
+    	\item $y'=\displaystyle\frac{x+y}{y-x+2}$\\
+    	
+    	\textbf{Решение:} 
+    	
+    	Уравнение первого порядка, сводящееся к однородному 
+    	
+    	\[{{y^2+\left(4-2\,x\right)\,y-x^2}\over{2}}={\it C.}\]\\
+    	\item $y'\cdot\sin{x} + y \cdot \cos{x} = \tg{x}$ \\
+    	
+    	\textbf{Решение:} 
+    	
+    	Линейное уравнение первого порядка 
+    	
+    	\[y={{\ln{\sec{x}}+{\it C}}\over{\sin x}}.\]\\
+    	
+    \end{enumerate}
+
+    \subsection*{4 задание}
+    \addcontentsline{toc}{subsection}{4 задание}
+    Проверить, является ли представленная неявная функция решением следующей задачи Коши:
+    \[y' \cdot (2y - x \cdot \sqrt{e^{2y^{2}}-1}) = y \cdot \tg~xy,~ y(0) = 1; ~ y^2 = \ln~\sec~xy\]
+    
+    \begin{verbatim}
+    
+        (%i1)	solution(x, y) := y^2 = log(sec(x*y));
+        (%o1)	solution(x,y):=y^2=log(sec(x*y))
+        (%i2)	solution(0, 1);
+        (%o2)	1=0
+        
+    \end{verbatim}
+    
+	Условие не выполняется, следовательно представленная неявная функция не является решением данной задачи Коши.
+    
+\end{document}
